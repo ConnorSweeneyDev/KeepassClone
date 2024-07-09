@@ -35,7 +35,9 @@ int uimain(std::function<int()> run)
   return run();
 }
 
+#ifdef _WIN32
 int main()
 {
   return uimain([]() { return sciter::application::run(); });
 }
+#endif
