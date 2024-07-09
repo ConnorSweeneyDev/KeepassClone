@@ -9,14 +9,14 @@ CXXFLAGS = -g -O2 -std=c++20 -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_FORTI
 WARNINGS = -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wcast-qual -Wcast-align -Wfloat-equal -Wlogical-op -Wduplicated-cond -Wshift-overflow=2 -Wformat=2
 SYSTEM_INCLUDES = -isystemext/include -isystemext/include/sciter
 ifeq ($(OS), Windows_NT)
-  INCLUDES = -Iprog/include -Iprog/include/windows -Iext/include -Iext/include/sciter
+  INCLUDES = -Iprog/include -Iprog/include/windows -Iext/include -Iext/include/sciter -Iext/include/gnome
   LIBRARIES = -lmingw32
   EXT_SOURCES = ext/src/sciter-win-main.cpp
   OUTPUT = bin/windows/KeepassClone.exe
 else
   UNAME_S := $(shell uname -s)
   ifeq ($(UNAME_S), Linux)
-    INCLUDES = -Iprog/include -Iext/include -Iext/include/sciter
+    INCLUDES = -Iprog/include -Iext/include -Iext/include/sciter -Iext/include/gnome
     LIBRARIES = -Wl,-rpath,'$$ORIGIN'
     EXT_SOURCES = ext/src/sciter-gtk-main.cpp
     OUTPUT = bin/linux/KeepassClone.out
