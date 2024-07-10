@@ -20,7 +20,7 @@ including the `libsciter.so` file.
 
 On windows, when you run the binary the manifest file in the same directory as it is read, this is
 to ensure that the binary has DPIAwareness set to true and PerMonitorV2 or V1 if possible, as this
-is recommended by SciterJS on windows.
+is recommended by SciterJS for windows.
 
 ### Windows
 You must have the same version of [MinGW](https://winlibs.com/) as me in your path (look at
