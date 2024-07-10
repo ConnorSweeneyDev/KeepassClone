@@ -1,5 +1,17 @@
 RM = rm -r
 CXX = g++
+ifeq ($(OS), Windows_NT)
+  ECHO = echo -e
+else
+  UNAME_S := $(shell uname -s)
+  ifeq ($(UNAME_S), Linux)
+    ECHO = echo
+  endif
+  #MAC IS NOT SUPPORTED YET
+  #ifeq ($(UNAME_S), Darwin)
+  #endif
+endif
+
 
 #RELEASE FLAGS:
 #CXXFLAGS = -s -O3 -std=c++20 -DNDEBUG -D_FORTIFY_SOURCE=2 -fstack-protector-strong
@@ -27,11 +39,30 @@ else
 endif
 
 OBJECTS_DIRECTORY = obj
-COMMANDS_DIRECTORY = compile_commands.json
 PROG_SOURCES = $(wildcard prog/src/*.cpp)
 OBJECTS = $(patsubst prog/src/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(PROG_SOURCES)) $(patsubst ext/src/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(EXT_SOURCES))
 
-all: compile_commands object $(OUTPUT)
+COMMANDS_DIRECTORY = compile_commands.json
+FORMAT_DIRECTORY = .clang-format
+STYLE = BasedOnStyle: LLVM
+TAB_WIDTH = IndentWidth: 2
+INITIALIZER_WIDTH = ConstructorInitializerIndentWidth: 2
+CONTINUATION_WIDTH = ContinuationIndentWidth: 2
+BRACES = BreakBeforeBraces: Allman
+LANGUAGE = Language: Cpp
+LIMIT = ColumnLimit: 100
+BLOCKS = AllowShortBlocksOnASingleLine: true
+FUNCTIONS = AllowShortFunctionsOnASingleLine: true
+IFS = AllowShortIfStatementsOnASingleLine: true
+LOOPS = AllowShortLoopsOnASingleLine: true
+CASE_LABELS = AllowShortCaseLabelsOnASingleLine: true
+PP_DIRECTIVES = IndentPPDirectives: BeforeHash
+NAMESPACE_INDENTATION = NamespaceIndentation: All
+NAMESPACE_COMMENTS = FixNamespaceComments: false
+INDENT_CASE_LABELS = IndentCaseLabels: true
+BREAK_TEMPLATE_DECLARATIONS = AlwaysBreakTemplateDeclarations: false
+
+all: compile_commands clang-format object $(OUTPUT)
 
 compile_commands:
 	@echo "[" > $(COMMANDS_DIRECTORY)
@@ -40,6 +71,11 @@ compile_commands:
 	@sed -i "$$ s/,$$//" $(COMMANDS_DIRECTORY)
 	@echo "]" >> $(COMMANDS_DIRECTORY)
 	@echo "$(COMMANDS_DIRECTORY) updated."
+
+clang-format:
+	@$(ECHO) "---\n$(STYLE)\n$(TAB_WIDTH)\n$(INITIALIZER_WIDTH)\n$(CONTINUATION_WIDTH)\n$(BRACES)\n---\n$(LANGUAGE)\n$(LIMIT)\n$(BLOCKS)\n$(FUNCTIONS)\n$(IFS)\n$(LOOPS)\n$(CASE_LABELS)\n$(PP_DIRECTIVES)\n$(NAMESPACE_INDENTATION)\n$(NAMESPACE_COMMENTS)\n$(INDENT_CASE_LABELS)\n$(BREAK_TEMPLATE_DECLARATIONS)\n..." > $(FORMAT_DIRECTORY)
+	@find prog -type f \( -name "*.cpp" -o -name "*.hpp" \) -print0 | xargs -0 -I{} sh -c 'clang-format -i "{}"'
+	@echo "$(FORMAT_DIRECTORY) updated."
 
 object:
 	@if [ ! -d "$(OBJECTS_DIRECTORY)" ]; then mkdir -p $(OBJECTS_DIRECTORY); fi
