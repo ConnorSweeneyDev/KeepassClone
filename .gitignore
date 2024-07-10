@@ -10,7 +10,6 @@ resources.cpp
 
 # Generated clangd files
 compile_commands.json
-.clangd
 .clang-format
 .cache
 

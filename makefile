@@ -12,35 +12,34 @@ else
   #endif
 endif
 
-
 #RELEASE FLAGS:
 #CXXFLAGS = -s -O3 -std=c++20 -DNDEBUG -D_FORTIFY_SOURCE=2 -fstack-protector-strong
 #DEBUG FLAGS:
 CXXFLAGS = -g -O2 -std=c++20 -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_FORTIFY_SOURCE=2 -fstack-protector-strong
 
 WARNINGS = -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wcast-qual -Wcast-align -Wfloat-equal -Wlogical-op -Wduplicated-cond -Wshift-overflow=2 -Wformat=2
-SYSTEM_INCLUDES = -isystemext/include -isystemext/include/sciter
+SYSTEM_INCLUDES = -isystemexternal/include -isystemexternal/include/sciter -isystemexternal/include/gtk -isystemexternal/include/graphene -isystemexternal/include/glib -isystemexternal/include/pango -isystemexternal/include/harfbuzz -isystemexternal/include/cairo -isystemexternal/include/gdk-pixbuf
 ifeq ($(OS), Windows_NT)
-  INCLUDES = -Iprog/include -Iprog/include/windows -Iext/include -Iext/include/sciter
+  INCLUDES = -Iprogram/include -Iprogram/include/windows -Iexternal/include -Iexternal/include/sciter
   LIBRARIES = -lmingw32
-  EXT_SOURCES = ext/src/sciter-win-main.cpp
-  OUTPUT = bin/windows/KeepassClone.exe
+  EXTERNAL_SOURCES = external/source/sciter-win-main.cpp
+  OUTPUT = binary/windows/KeepassClone.exe
 else
-  UNAME_S := $(shell uname -s)
   ifeq ($(UNAME_S), Linux)
-    INCLUDES = -Iprog/include -Iext/include -Iext/include/sciter -Iext/include/gtk -Iext/include/graphene -Iext/include/glib -Iext/include/pango -Iext/include/harfbuzz -Iext/include/cairo -Iext/include/gdk-pixbuf
+    INCLUDES = -Iprogram/include -Iexternal/include -Iexternal/include/sciter -Iexternal/include/gtk -Iexternal/include/graphene -Iexternal/include/glib -Iexternal/include/pango -Iexternal/include/harfbuzz -Iexternal/include/cairo -Iexternal/include/gdk-pixbuf
     LIBRARIES = -Wl,-rpath,'$$ORIGIN'
-    EXT_SOURCES = ext/src/sciter-gtk-main.cpp
-    OUTPUT = bin/linux/KeepassClone.out
+    EXTERNAL_SOURCES = external/source/sciter-gtk-main.cpp
+    OUTPUT = binary/linux/KeepassClone.out
   endif
   #MAC IS NOT SUPPORTED YET
   #ifeq ($(UNAME_S), Darwin)
   #endif
 endif
 
-OBJECTS_DIRECTORY = obj
-PROG_SOURCES = $(wildcard prog/src/*.cpp)
-OBJECTS = $(patsubst prog/src/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(PROG_SOURCES)) $(patsubst ext/src/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(EXT_SOURCES))
+RESOURCES_DIRECTORY = program/include/resources.cpp
+OBJECTS_DIRECTORY = object
+PROGRAM_SOURCES = $(wildcard program/source/*.cpp)
+OBJECTS = $(patsubst program/source/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(PROGRAM_SOURCES)) $(patsubst external/source/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(EXTERNAL_SOURCES))
 
 COMMANDS_DIRECTORY = compile_commands.json
 FORMAT_DIRECTORY = .clang-format
@@ -66,15 +65,15 @@ all: compile_commands clang-format object $(OUTPUT)
 
 compile_commands:
 	@echo "[" > $(COMMANDS_DIRECTORY)
-	@for source in $(PROG_SOURCES); do echo -e "\t{ \"directory\": \"$(CURDIR)\", \"command\": \"$(CXX) $(CXXFLAGS) $(WARNINGS) $(INCLUDES) $(SYSTEM_INCLUDES) $(LIBRARIES) -c $$source -o $(OBJECTS_DIRECTORY)/$$(basename $$source .cpp).o\", \"file\": \"$$source\" },"; done >> $(COMMANDS_DIRECTORY)
-	@for source in $(EXT_SOURCES); do echo -e "\t{ \"directory\": \"$(CURDIR)\", \"command\": \"$(CXX) $(CXXFLAGS) $(INCLUDES) -c $$source -o $(OBJECTS_DIRECTORY)/$$(basename $$source .cpp).o\", \"file\": \"$$source\" },"; done >> $(COMMANDS_DIRECTORY)
+	@for source in $(PROGRAM_SOURCES); do $(ECHO) "\t{ \"directory\": \"$(CURDIR)\", \"command\": \"$(CXX) $(CXXFLAGS) $(WARNINGS) $(INCLUDES) $(SYSTEM_INCLUDES) $(LIBRARIES) -c $$source -o $(OBJECTS_DIRECTORY)/$$(basename $$source .cpp).o\", \"file\": \"$$source\" },"; done >> $(COMMANDS_DIRECTORY)
+	@for source in $(EXTERNAL_SOURCES); do $(ECHO) "\t{ \"directory\": \"$(CURDIR)\", \"command\": \"$(CXX) $(CXXFLAGS) $(INCLUDES) -c $$source -o $(OBJECTS_DIRECTORY)/$$(basename $$source .cpp).o\", \"file\": \"$$source\" },"; done >> $(COMMANDS_DIRECTORY)
 	@sed -i "$$ s/,$$//" $(COMMANDS_DIRECTORY)
 	@echo "]" >> $(COMMANDS_DIRECTORY)
 	@echo "$(COMMANDS_DIRECTORY) updated."
 
 clang-format:
 	@$(ECHO) "---\n$(STYLE)\n$(TAB_WIDTH)\n$(INITIALIZER_WIDTH)\n$(CONTINUATION_WIDTH)\n$(BRACES)\n---\n$(LANGUAGE)\n$(LIMIT)\n$(BLOCKS)\n$(FUNCTIONS)\n$(IFS)\n$(LOOPS)\n$(CASE_LABELS)\n$(PP_DIRECTIVES)\n$(NAMESPACE_INDENTATION)\n$(NAMESPACE_COMMENTS)\n$(INDENT_CASE_LABELS)\n$(BREAK_TEMPLATE_DECLARATIONS)\n..." > $(FORMAT_DIRECTORY)
-	@find prog -type f \( -name "*.cpp" -o -name "*.hpp" \) -print0 | xargs -0 -I{} sh -c 'clang-format -i "{}"'
+	@find program -type f \( -name "*.cpp" -o -name "*.hpp" \) -print0 | xargs -0 -I{} sh -c 'clang-format -i "{}"'
 	@echo "$(FORMAT_DIRECTORY) updated."
 
 object:
@@ -82,12 +81,12 @@ object:
 
 $(OUTPUT): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(WARNINGS) $(INCLUDES) $(SYSTEM_INCLUDES) $(OBJECTS) $(LIBRARIES) -o $(OUTPUT)
-$(OBJECTS_DIRECTORY)/%.o: prog/src/%.cpp
+$(OBJECTS_DIRECTORY)/%.o: program/source/%.cpp
 	$(CXX) $(CXXFLAGS) $(WARNINGS) $(INCLUDES) $(SYSTEM_INCLUDES) -c $< -o $@
-$(OBJECTS_DIRECTORY)/%.o: ext/src/%.cpp
+$(OBJECTS_DIRECTORY)/%.o: external/source/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(SYSTEM_INCLUDES) -c $< -o $@
 
 clean:
+	@if [ -f $(RESOURCES_DIRECTORY) ]; then $(RM) $(RESOURCES_DIRECTORY); fi
 	@if [ -d "$(OBJECTS_DIRECTORY)" ]; then $(RM) $(OBJECTS_DIRECTORY); fi
 	@if [ -f $(OUTPUT) ]; then $(RM) $(OUTPUT); fi
-	@if [ -f prog/include/resources.cpp ]; then $(RM) prog/include/resources.cpp; fi

@@ -1,3 +1,3 @@
 @ECHO OFF
 
-start pwsh -Command "./bin/windows/KeepassClone.exe"
+start pwsh -Command "./binary/windows/KeepassClone.exe"
