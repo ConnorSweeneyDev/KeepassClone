@@ -13,8 +13,8 @@ binary must be run from the root to work as intended.
 
 The build scripts consist of two parts, firstly the packfolder binary in the SciterJS SDK is called
 on the `ui` folder of this project to generate a `program/include/resources.cpp` file which is then
-included in any cpp files that need to access it - this file is not included in compilation. Then it
-runs the makefile which compiles the project as per usual. Note that on windows everything is
+included in any cpp files that need to access it - this file is not included in compilation. Next
+the makefile is run which compiles the project as per usual. Note that on windows everything is
 statically linked except the `sciter.dll` file, but on linux everything is dynamically linked,
 including the `libsciter.so` file.
 
@@ -30,8 +30,8 @@ install make --source winget`) and Python3 (`winget install --id Python.Python.3
 
 ### Linux
 If you don't already have a native linux box, I highly recommend using WSL2, specifically running
-`wsl2 --install Ubuntu-24.04`, as this framework is very particular about the dependencies on linux
-and 24.04 happens to have the best ones for it.
+`wsl2 --install Ubuntu-24.04`, as this framework is very particular about the video dependencies on
+linux and 24.04 happens to have the best ones for it.
 
 Do the following to ensure your environment is set up correctly:
 - Only run `sudo apt update && sudo apt upgrade` if you haven't already.
