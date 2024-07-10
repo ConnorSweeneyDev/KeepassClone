@@ -36,7 +36,6 @@ else
   #endif
 endif
 
-RESOURCES_DIRECTORY = program/include/resources.cpp
 OBJECTS_DIRECTORY = object
 PROGRAM_SOURCES = $(wildcard program/source/*.cpp)
 OBJECTS = $(patsubst program/source/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(PROGRAM_SOURCES)) $(patsubst external/source/%.cpp,$(OBJECTS_DIRECTORY)/%.o,$(EXTERNAL_SOURCES))
@@ -87,6 +86,5 @@ $(OBJECTS_DIRECTORY)/%.o: external/source/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(SYSTEM_INCLUDES) -c $< -o $@
 
 clean:
-	@if [ -f $(RESOURCES_DIRECTORY) ]; then $(RM) $(RESOURCES_DIRECTORY); fi
 	@if [ -d "$(OBJECTS_DIRECTORY)" ]; then $(RM) $(OBJECTS_DIRECTORY); fi
 	@if [ -f $(OUTPUT) ]; then $(RM) $(OUTPUT); fi
