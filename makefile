@@ -21,7 +21,7 @@ WARNINGS = -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wcast-qual -Wcast-ali
 SYSTEM_INCLUDES = -isystemexternal/include -isystemexternal/include/sciter -isystemexternal/include/gtk -isystemexternal/include/graphene -isystemexternal/include/glib -isystemexternal/include/pango -isystemexternal/include/harfbuzz -isystemexternal/include/cairo -isystemexternal/include/gdk-pixbuf
 ifeq ($(OS), Windows_NT)
   INCLUDES = -Iprogram/include -Iprogram/include/windows -Iexternal/include -Iexternal/include/sciter
-  LIBRARIES = -lmingw32
+  LIBRARIES = -static -Wl,-Bstatic -lstdc++ -lgcc -lssp -lwinpthread -Wl,-Bdynamic
   EXTERNAL_SOURCES = external/source/sciter-win-main.cpp
   OUTPUT = binary/windows/KeepassClone.exe
 else

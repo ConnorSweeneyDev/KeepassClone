@@ -1,0 +1,7 @@
+external/include/gtk -> gtk-4.0
+external/include/cairo -> cairo2
+external/include/harfbuzz -> harfbuzz
+external/include/graphene -> graphene-1.0
+external/include/glib -> glib-2.0
+external/include/pango -> pango-1.0
+external/include/gdk-pixbuf -> gdk-pixbuf-2.0
