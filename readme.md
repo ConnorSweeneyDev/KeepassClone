@@ -5,7 +5,7 @@ A clone of the GUI of Keepass to test out the SciterJS framework.
 Before cloning this repository, you will need to download the SciterJS SDK from their GitLab
 [repository](https://gitlab.com/sciter-engine/sciter-js-sdk) as a zip or tar.gz file and extract it
 to a memorable location on your pc, then remove the trailing `-main` (I recommend `C:\sciter-js-sdk`
-for windows or `~/sciter-js-sdk` for linux).
+for windows or `~/sciter-js-sdk` for linux because the build scripts assume these locations).
 
 After following the platform specific instructions you can execute the `build.bat` file on windows
 or the `build.sh` file on linux from the root of the project to build the binary. The outputted
