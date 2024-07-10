@@ -16,7 +16,7 @@ ifeq ($(OS), Windows_NT)
 else
   UNAME_S := $(shell uname -s)
   ifeq ($(UNAME_S), Linux)
-    INCLUDES = -Iprog/include -Iext/include -Iext/include/sciter -I/usr/include/gtk-3.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/atk-1.0
+    INCLUDES = -Iprog/include -Iext/include -Iext/include/sciter -Iext/include/gtk -Iext/include/graphene -Iext/include/glib -Iext/include/pango -Iext/include/harfbuzz -Iext/include/cairo -Iext/include/gdk-pixbuf
     LIBRARIES = -Wl,-rpath,'$$ORIGIN'
     EXT_SOURCES = ext/src/sciter-gtk-main.cpp
     OUTPUT = bin/linux/KeepassClone.out
