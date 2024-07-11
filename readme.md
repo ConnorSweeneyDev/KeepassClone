@@ -23,10 +23,10 @@ to ensure that the binary has DPIAwareness set to true and PerMonitorV2 or V1 if
 is recommended by SciterJS for windows.
 
 ### Windows
-You must have the same version of [MinGW](https://winlibs.com/) as me in your path (look at
-`external/mingw_version_info.txt`), this will give you access to the unix tools that are used in the
-makefile and ensure no version collisions. To build using the makefile, you will need Make (`winget
-install make --source winget`) and Python3 (`winget install --id Python.Python.3.12`);
+You must have any 64-bit version of [MinGW](https://winlibs.com/) with clang/LLVM support in your
+path, this will give you access to the unix tools that are used in the makefile. To build using the
+makefile, you will need Make (`winget install make --source winget`) and Python3 (`winget install
+--id Python.Python.3.12`);
 
 ### Linux
 If you don't already have a native linux box, I highly recommend using WSL2, specifically running
